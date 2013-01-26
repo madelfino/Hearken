@@ -129,7 +129,7 @@ window.onload = function() {
     Crafty.scene("main", function() {
         Crafty.background("url('images/background.png')");
 
-        level = loadNextLevelData();
+        level = getCurrentLevel();
         generateMap(level);
         
         var beat = setInterval(function(){
@@ -154,6 +154,11 @@ window.onload = function() {
     });
 
 };
+
+function getCurrentLevel()
+{
+
+}
 
 //  GenerateMap
 function generateMap(level)
