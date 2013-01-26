@@ -8,6 +8,9 @@ window.onload = function() {
 			Crafty.sprite(32,48, "images/player.png", {
 				playerSprite: [0,0]
 			});
+                        Crafty.sprite(40,40, "images/wall.png", {
+                                wallSprite: [0,0]
+                        });
             Crafty.audio.add("heartbeat", "sfx/short_heartbeat.wav");
             Crafty.scene("main");
         });
