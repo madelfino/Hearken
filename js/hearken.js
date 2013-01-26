@@ -12,7 +12,7 @@ window.onload = function() {
                                 wallSprite: [0,0]
                         });
             Crafty.audio.add("heartbeat", "sfx/short_heartbeat.wav");
-            Crafty.scene("main");
+            initializeLevelData();
         });
 
         Crafty.background("#000");
@@ -20,6 +20,19 @@ window.onload = function() {
                 .text("Loading")
                 .css({"text-align":"center"});
     });
+
+    var LEVEL_DATA;
+    function initializeLevelData()
+    {
+        console.log("initializingJSON");
+        if(!LEVEL_DATA) {
+            $.getJSON("levels.json", function(json) {
+                console.log("JSON Loaded");
+                LEVEL_DATA = json;
+                Crafty.scene("main");
+            });
+        }
+    }
 
     Crafty.scene("loading");
 
@@ -86,7 +99,9 @@ window.onload = function() {
     
     Crafty.scene("main", function() {
         Crafty.background("url('images/background.png')");
-        generateMap();
+
+        level = loadNextLevelData();
+        generateMap(level);
         
         var beat = setInterval(function(){
                 var distToHeart = distance(player.x, 0, player.y, 0);
@@ -112,7 +127,7 @@ window.onload = function() {
 };
 
 //  GenerateMap
-function generateMap()
+function generateMap(level)
 {
     for(var i = 0; i < 20; i++)
     {
