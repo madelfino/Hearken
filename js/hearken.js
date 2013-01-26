@@ -53,6 +53,7 @@ window.onload = function() {
         var screenText = Crafty.e("2D, DOM, Text").attr({w:600,h:20,x:100,y:100})
                 .text("")
                 .css({"text-align":"center"});
+        screenText.requires('Keyboard').bind('KeyDown', function () { if (this.isDown('SPACE')) Crafty.scene("main"); });
         animateText(screenText, "TRUE! --nervous --very, very dreadfully nervous I had been and am; but why will you say that I am mad? The disease had sharpened my senses --not destroyed --not dulled them. Above all was the sense of hearing acute. I heard all things in the heaven and in the earth. I heard many things in hell. How, then, am I mad? Hearken! and observe how healthily --how calmly I can tell you the whole story.", 50, function()
         {
             setTimeout(function(){Crafty.scene("main");},4000);
