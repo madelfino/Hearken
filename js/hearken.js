@@ -93,13 +93,10 @@ window.onload = function() {
                 .attr({x:Crafty.viewport.width/2, y:Crafty.viewport.height/2, score:0})
                 .origin("center")
                 .playerControls(1)
-                .Dude()
-                .bind("keydown", function(e) {
-                    if (e.keyCode === Crafty.keys.SPACE) {
-                        screenText.text("dig motherfucker, dig!");
-                    }
-                });
-                
+                .Dude();
+
+        player.requires('Keyboard').bind('KeyDown', function () { if (this.isDown('SPACE')) screenText.text("dig motherfucker, dig!"); });
+
         var screenText = Crafty.e("2D, DOM, Text").attr({w:100,h:20,x:150,y:120})
                 .text("")
                 .css({"text-align":"center"});
