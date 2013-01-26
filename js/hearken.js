@@ -1,3 +1,8 @@
+var LEVEL_DATA;
+var TILE_HEIGHT = 40;
+var TILE_WIDTH = 40;
+var level_index = 0;
+
 window.onload = function() {
 
     Crafty.init(800,600);
@@ -104,9 +109,9 @@ window.onload = function() {
     });
 
     //to determine if the player is close enough to the objective
-    function Victory(x1,x2,y1,y2)
+    function withinRange(x1,x2,y1,y2)
     {	
-        return distance(x1,x2,y1,y2) >= 56;
+        return (distance(x1,x2,y1,y2) <= 40);
     }
 	
     function distance(x1,x2,y1,y2)
@@ -119,9 +124,13 @@ window.onload = function() {
 
         level = getCurrentLevel();
         generateMap(level);
+        var objective = [];
+        objective.x = 100;
+        objective.y = 100;
         
         var beat = setInterval(function(){
-                var distToHeart = distance(player.x, 0, player.y, 0);
+                //var distToHeart = distance(player.x, level.objective[1]*TILE_HEIGHT, player.y, level.objective[0]*TILE_WIDTH);
+                var distToHeart = distance(player._x, objective.x, player._y, objective.y);
                 var heartbeatVolume = 1 - Math.log((distToHeart+3)/3)/10.0;
                 Crafty.audio.play("heartbeat", 1, (heartbeatVolume < 1) ? ((heartbeatVolume > 0) ? heartbeatVolume : 0) : 1);
                 textToDisplay = "Distance: " + distToHeart + " volume: " + heartbeatVolume;
@@ -131,10 +140,20 @@ window.onload = function() {
         var player = Crafty.e("2D, DOM, playerSprite, playerControls, Collision, Dude, Keyboard")
                 .attr({x:Crafty.viewport.width/2, y:Crafty.viewport.height/2, score:0})
                 .origin("center")
-                .playerControls(1)
+                .playerControls(2)
                 .Dude();
 
-        player.requires('Keyboard').bind('KeyDown', function () { if (this.isDown('SPACE')) screenText.text("dig motherfucker, dig!"); });
+        player.requires('Keyboard').bind('KeyDown', function () {
+            if (this.isDown('SPACE')) {
+                var digText = "";
+                if(withinRange(player._x, objective.x, player._y, objective.y)){
+                    digText = "HIT";
+                } else {
+                    digText = "MISS";
+                }
+                screenText.text(digText);
+            }
+        });
 
         var screenText = Crafty.e("2D, DOM, Text").attr({w:100,h:20,x:150,y:120})
                 .text("")
