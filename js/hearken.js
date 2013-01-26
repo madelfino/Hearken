@@ -8,7 +8,7 @@ window.onload = function() {
 			Crafty.sprite(32,48, "images/player.png", {
 				playerSprite: [0,0]
 			});
-                        Crafty.sprite(40,40, "images/wall.png", {
+                        Crafty.sprite(40, 40, "images/wall.png", {
                                 wallSprite: [0,0]
                         });
             Crafty.audio.add("heartbeat", "sfx/short_heartbeat.wav");
@@ -86,6 +86,7 @@ window.onload = function() {
     
     Crafty.scene("main", function() {
         Crafty.background("url('images/background.png')");
+        generateMap();
         
         var beat = setInterval(function(){
                 var distToHeart = distance(player.x, 0, player.y, 0);
@@ -109,3 +110,24 @@ window.onload = function() {
     });
 
 };
+
+//  GenerateMap
+function generateMap()
+{
+    for(var i = 0; i < 20; i++)
+    {
+        for(var j = 0; j < 15; j++)
+        {
+            if((i==0 || i==19) || (j==0 || j==14))
+            {
+                addWall(i, j);
+            }
+        }
+    }
+};
+
+function addWall(i, j)
+{
+    Crafty.e("2D, DOM, solid, wallSprite")
+        .attr({x: i*40, y: j*40, z: 1});
+}
