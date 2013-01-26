@@ -78,6 +78,12 @@ window.onload = function() {
         }
         
     });
+
+    //to determine if the player has achieved victory.
+    	function Victory(x1,x2,y1,y2)
+    	{	
+		return distance(x1,x2,y1,y2) >= 56;
+	}
 	
     function distance(x1,x2,y1,y2)
     {
