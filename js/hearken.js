@@ -84,16 +84,21 @@ window.onload = function() {
         Crafty.background("url('images/background.png')");
         
         var beat = setInterval(function(){
-                var heartbeatVolume = distance(player.x, 0, player.y, 0)/1000.0;
-                Crafty.audio.play("heartbeat", 1, heartbeatVolume);
+                var heartbeatVolume = 1 - Math.log((distance(player.x, 0, player.y, 0)+3)/3)/10.0;
+                Crafty.audio.play("heartbeat", 1, (heartbeatVolume < 1) ? ((heartbeatVolume > 0) ? heartbeatVolume : 0) : 1);
                 screenText.text("volume: " + heartbeatVolume);
             }, 3000);
         
-        var player = Crafty.e("2D, DOM, player, playerControls, Collision, Dude")
+        var player = Crafty.e("2D, DOM, player, playerControls, Collision, Dude, Keyboard")
                 .attr({x:Crafty.viewport.width/2, y:Crafty.viewport.height/2, score:0})
                 .origin("center")
                 .playerControls(1)
-                .Dude();
+                .Dude()
+                .bind("keydown", function(e) {
+                    if (e.keyCode === Crafty.keys.SPACE) {
+                        screenText.text("dig motherfucker, dig!");
+                    }
+                });
                 
         var screenText = Crafty.e("2D, DOM, Text").attr({w:100,h:20,x:150,y:120})
                 .text("")
