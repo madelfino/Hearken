@@ -6,7 +6,7 @@ window.onload = function() {
     
         Crafty.load(["images/background.png", "images/player.png", "sfx/heartbeat.wav"], function() {
 			Crafty.sprite(32,48, "images/player.png", {
-				player: [0,0]
+				playerSprite: [0,0]
 			});
             Crafty.audio.add("heartbeat", "sfx/short_heartbeat.wav");
             Crafty.scene("main");
@@ -89,7 +89,7 @@ window.onload = function() {
                 screenText.text("volume: " + heartbeatVolume);
             }, 3000);
         
-        var player = Crafty.e("2D, DOM, player, playerControls, Collision, Dude, Keyboard")
+        var player = Crafty.e("2D, DOM, playerSprite, playerControls, Collision, Dude, Keyboard")
                 .attr({x:Crafty.viewport.width/2, y:Crafty.viewport.height/2, score:0})
                 .origin("center")
                 .playerControls(1)
