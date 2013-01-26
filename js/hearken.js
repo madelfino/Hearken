@@ -24,7 +24,7 @@ window.onload = function() {
                                 wallSprite: [0,0]
                         });
             Crafty.audio.add("heartbeat", "sfx/short_heartbeat.wav");
-            initializeLevelData();
+            Crafty.scene("intro");
         });
 
         Crafty.background("#000");
@@ -32,19 +32,6 @@ window.onload = function() {
                 .text("Loading")
                 .css({"text-align":"center"});
     });
-
-    var LEVEL_DATA;
-    function initializeLevelData()
-    {
-        console.log("initializingJSON");
-        if(!LEVEL_DATA) {
-            $.getJSON("levels.json", function(json) {
-                console.log("JSON Loaded");
-                LEVEL_DATA = json;
-                Crafty.scene("intro");
-            });
-        }
-    }
 
     Crafty.scene("loading");
     
@@ -164,14 +151,14 @@ function getCurrentLevel()
 //  GenerateMap
 function generateMap(level)
 {
-    for(var i = 0; i < 20; i++)
+    var tiles = level.tiles;
+    
+    for(var j = 0; j < tiles.length; j++)
     {
-        for(var j = 0; j < 15; j++)
+        for(var i = 0; i < tiles[j].length; i++)
         {
-            if((i==0 || i==19) || (j==0 || j==14))
-            {
+            if(tiles[j][i]=='1')
                 addWall(i, j);
-            }
         }
     }
 };
