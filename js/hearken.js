@@ -4,10 +4,11 @@ window.onload = function() {
 
     Crafty.scene("loading", function(){
     
-        Crafty.load(["images/background.png", "images/player.png"], function() {
+        Crafty.load(["images/background.png", "images/player.png", "sfx/heartbeat.wav"], function() {
 			Crafty.sprite(32,48, "images/player.png", {
 				player: [0,0]
 			});
+            Crafty.audio.add("heartbeat", "sfx/short_heartbeat.wav");
             Crafty.scene("main");
         });
 
@@ -19,7 +20,7 @@ window.onload = function() {
 
     Crafty.scene("loading");
 
-	Crafty.c('Dude', {
+    Crafty.c('Dude', {
         Dude: function() {
                 //setup animations
                 this.requires("SpriteAnimation, Collision")
@@ -62,7 +63,7 @@ window.onload = function() {
         }
     });
 	
-	Crafty.c("playerControls", {
+    Crafty.c("playerControls", {
         init: function() {
             this.requires('Multiway');
         },
@@ -74,16 +75,29 @@ window.onload = function() {
         
     });
 	
+    function distance(x1,x2,y1,y2)
+    {
+        return Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
+    }
+    
     Crafty.scene("main", function() {
         Crafty.background("url('images/background.png')");
-
-		
-		
+        
+        var beat = setInterval(function(){
+                var heartbeatVolume = distance(player.x, 0, player.y, 0)/1000.0;
+                Crafty.audio.play("heartbeat", 1, heartbeatVolume);
+                screenText.text("volume: " + heartbeatVolume);
+            }, 3000);
+        
         var player = Crafty.e("2D, DOM, player, playerControls, Collision, Dude")
-                .attr({move: {left:false, right:false, up:false, down:false}, xspeed:10, yspeed:10, x:Crafty.viewport.width/2, y:Crafty.viewport.height/2, score:0})
+                .attr({x:Crafty.viewport.width/2, y:Crafty.viewport.height/2, score:0})
                 .origin("center")
-				.playerControls(1)
-				.Dude();
+                .playerControls(1)
+                .Dude();
+                
+        var screenText = Crafty.e("2D, DOM, Text").attr({w:100,h:20,x:150,y:120})
+                .text("")
+                .css({"text-align":"center"});
     });
 
 };
