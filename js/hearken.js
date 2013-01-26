@@ -84,9 +84,11 @@ window.onload = function() {
         Crafty.background("url('images/background.png')");
         
         var beat = setInterval(function(){
-                var heartbeatVolume = 1 - Math.log((distance(player.x, 0, player.y, 0)+3)/3)/10.0;
+                var distToHeart = distance(player.x, 0, player.y, 0);
+                var heartbeatVolume = 1 - Math.log((distToHeart+3)/3)/10.0;
                 Crafty.audio.play("heartbeat", 1, (heartbeatVolume < 1) ? ((heartbeatVolume > 0) ? heartbeatVolume : 0) : 1);
-                screenText.text("volume: " + heartbeatVolume);
+                textToDisplay = "Distance: " + distToHeart + " volume: " + heartbeatVolume;
+                screenText.text(textToDisplay);
             }, 3000);
         
         var player = Crafty.e("2D, DOM, playerSprite, playerControls, Collision, Dude, Keyboard")
