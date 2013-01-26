@@ -138,10 +138,18 @@ window.onload = function() {
             }, 3000);
         
         var player = Crafty.e("2D, DOM, playerSprite, playerControls, Collision, Dude, Keyboard")
-                .attr({x:Crafty.viewport.width/2, y:Crafty.viewport.height/2, score:0})
+                .attr({x: getStartX(level), y: getStartY(level), score:0})
                 .origin("center")
                 .playerControls(2)
                 .Dude();
+        function getStartX(level)
+        {
+            return level.start[1] * TILE_WIDTH;
+        }
+        function getStartY(level)
+        {
+            return level.start[0] * TILE_HEIGHT;
+        }
 
         player.requires('Keyboard').bind('KeyDown', function () {
             if (this.isDown('SPACE')) {
