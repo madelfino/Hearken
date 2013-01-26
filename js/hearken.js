@@ -2,6 +2,18 @@ window.onload = function() {
 
     Crafty.init(800,600);
 
+    function animateText(entity, text, speed, callback) {
+        var index = 0;
+        function queueNextChar() {
+            setTimeout(function() {
+                entity.text(entity._text + text[index++]);
+                if (index < text.length) queueNextChar();
+                else if(callback) callback();
+            }, speed);
+        }
+        if (index < text.length) queueNextChar();
+    }
+
     Crafty.scene("loading", function(){
     
         Crafty.load(["images/background.png", "images/player.png", "sfx/heartbeat.wav"], function() {
@@ -29,13 +41,24 @@ window.onload = function() {
             $.getJSON("levels.json", function(json) {
                 console.log("JSON Loaded");
                 LEVEL_DATA = json;
-                Crafty.scene("main");
+                Crafty.scene("intro");
             });
         }
     }
 
     Crafty.scene("loading");
-
+    
+    Crafty.scene("intro", function() {
+        var done = false;
+        var screenText = Crafty.e("2D, DOM, Text").attr({w:600,h:20,x:100,y:100})
+                .text("")
+                .css({"text-align":"center"});
+        animateText(screenText, "TRUE! --nervous --very, very dreadfully nervous I had been and am; but why will you say that I am mad? The disease had sharpened my senses --not destroyed --not dulled them. Above all was the sense of hearing acute. I heard all things in the heaven and in the earth. I heard many things in hell. How, then, am I mad? Hearken! and observe how healthily --how calmly I can tell you the whole story.", 50, function()
+        {
+            setTimeout(function(){Crafty.scene("main");},4000);
+        });
+    });
+    
     Crafty.c('Dude', {
         Dude: function() {
                 //setup animations
@@ -92,11 +115,11 @@ window.onload = function() {
         
     });
 
-    //to determine if the player has achieved victory.
-    	function Victory(x1,x2,y1,y2)
-    	{	
-		return distance(x1,x2,y1,y2) >= 56;
-	}
+    //to determine if the player is close enough to the objective
+    function Victory(x1,x2,y1,y2)
+    {	
+        return distance(x1,x2,y1,y2) >= 56;
+    }
 	
     function distance(x1,x2,y1,y2)
     {
