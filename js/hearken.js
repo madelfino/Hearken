@@ -158,7 +158,7 @@ window.onload = function() {
 
 function getCurrentLevel()
 {
-
+    return LEVEL_DATA.Levels[level_index];
 }
 
 //  GenerateMap
