@@ -55,6 +55,7 @@ window.onload = function() {
                 .bind('Moved', function(from) {
                     if(this.hit('solid')){
                         this.attr({x: from.x, y:from.y});
+                        this.stop();
                     }
                 }).onHit("fire", function() {
                     this.destroy();
