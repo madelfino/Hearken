@@ -115,7 +115,7 @@ var LEVEL_DATA = {
             ],
             "objective": [8,10],
             "start":[7,9,0],
-            "triggerText":"There's nothing here.  Where then, is that maddening sounds coming from?"
+            "triggerText":"There's nothing here.  Where then, is that maddening sound coming from?"
         }
     ]
 };
