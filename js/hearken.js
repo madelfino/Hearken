@@ -105,7 +105,7 @@ window.onload = function() {
     Crafty.scene("intro", function() {
         var done = false;
         var timeoutid = 0;
-        var screenText = Crafty.e("2D, DOM, Text").attr({w:600,h:20,x:100,y:100})
+        var screenText = Crafty.e("2D, DOM, Text").attr({w:600,h:20,x:100,y:200})
                 .text("")
                 .css({"text-align":"center"});
         if(level_index >= LEVEL_DATA.Levels.length) {
