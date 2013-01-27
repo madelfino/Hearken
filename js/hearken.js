@@ -200,5 +200,5 @@ function generateMap(level)
 function addWall(i, j)
 {
     Crafty.e("2D, DOM, solid, wallSprite")
-        .attr({x: i*40, y: j*40, z: 1});
+        .attr({x: i*40, y: j*40, z: 0});
 }
