@@ -253,7 +253,7 @@ window.onload = function() {
                 .attr({x: getStartX(level), y: getStartY(level), z: 2})
                 .origin("center")
                 .sprite(0, getStartDirection())
-                .playerControls(1.5)
+                .playerControls(1.0)
                 .Dude()
                 .bind("EnterFrame", function() {
                     if(withinRange(this._x, objective.x, this._y, objective.y) && !triggered) {
@@ -284,6 +284,7 @@ window.onload = function() {
             return setTimeout(function() {
                 var distToHeart = distance(player._x, objective.x, player._y, objective.y);
                 var heartbeatVolume = 1 - Math.log((distToHeart+3)/3)/10.0;
+                player.playerControls(0.2+Math.log((distToHeart+3)/3)/10.0);
                 Crafty.audio.play("heartbeat", 1, (heartbeatVolume < 1) ? ((heartbeatVolume > 0) ? heartbeatVolume : 0) : 1);
                 Crafty.trigger("beat");
                 clearTimeouts(heartbeatTimeouts);
