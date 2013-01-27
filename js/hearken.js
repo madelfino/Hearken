@@ -81,6 +81,7 @@ window.onload = function() {
                 .animate("walk_right", 0, 2, 3)
                 .animate("walk_up", 0, 3, 3)
                 .animate("walk_down", 0, 0, 3)
+
                 //change direction when a direction change event is received
                 .bind("NewDirection",
                     function (direction) {
@@ -110,8 +111,6 @@ window.onload = function() {
                         this.attr({x: from.x, y:from.y});
                         this.stop();
                     }
-                }).onHit("fire", function() {
-                    this.destroy();
                 });
             return this;
         }
