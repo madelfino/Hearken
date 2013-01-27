@@ -45,6 +45,7 @@ window.onload = function() {
                      "images/floor.jpg",
                      "images/top_fow.png",
                      "images/heart.png",
+                     "images/pulse.png",
                      "sfx/short_heartbeat.wav",
                      "music/telltale-heart-no-hb.wav"], function() {
             Crafty.sprite(32,48, "images/player.png", {
@@ -58,6 +59,9 @@ window.onload = function() {
             });
             Crafty.sprite(40, 40, "images/brick.png", {
                 brickSprite: [0,0]
+            });
+            Crafty.sprite(80, 80, "images/pulse.png", {
+                pulseSprite: [0,0]
             });
             Crafty.sprite(1600,1200, "images/top_fow.png", {
                 fow1: [0,0]
@@ -212,7 +216,7 @@ window.onload = function() {
 
         var triggered = false;
         var player = Crafty.e("2D, DOM, playerSprite, playerControls, Collision, Dude")
-                .attr({x: getStartX(level), y: getStartY(level)})
+                .attr({x: getStartX(level), y: getStartY(level), z: 2})
                 .origin("center")
                 .sprite(0, getStartDirection())
                 .playerControls(1.5)
@@ -247,11 +251,26 @@ window.onload = function() {
                 var distToHeart = distance(player._x, objective.x, player._y, objective.y);
                 var heartbeatVolume = 1 - Math.log((distToHeart+3)/3)/10.0;
                 Crafty.audio.play("heartbeat", 1, (heartbeatVolume < 1) ? ((heartbeatVolume > 0) ? heartbeatVolume : 0) : 1);
+                Crafty.trigger("beat");
                 clearTimeouts(heartbeatTimeouts);
                 heartbeatTimeouts.push(addHeartbeat(getHeartbeatSpeed()));
             }, speed);
         };
         heartbeatTimeouts.push(addHeartbeat(getHeartbeatSpeed()));
+
+        var pulse = Crafty.e("2D, DOM, SpriteAnimation, pulseSprite,  playerControls")
+                .attr({x: player._x - 782, y: player._y - 576, z: 1})
+                .animate("do_pulse", 0, 0, 3 )
+                .animate("do_down_pulse", 3, 0, 0 )
+                .bind("EnterFrame", function() {
+                    this.attr({x: player._x - 23, y: player._y - 13})
+                    this.updateSprite();
+                })
+                .bind("beat", function() {
+                    this.animate("do_pulse", 40, 0)
+                    this.animate("do_down_pulse", 40, 0)
+                });
+
 
         player.requires('Keyboard').bind('KeyDown', function () {
             if (this.isDown('SPACE') && DEBUG) {
