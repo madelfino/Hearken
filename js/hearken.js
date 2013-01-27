@@ -35,7 +35,7 @@ window.onload = function() {
                         Crafty.sprite(40, 40, "images/wall.png", {
                                 wallSprite: [0,0]
                         });
-                        Crafty.sprite(40, 40, "images/floor.jpg", {
+                        Crafty.sprite(40, 40, "images/wood.png", {
                                 floorSprite: [0,0]
                         });
             Crafty.audio.add("heartbeat", "sfx/short_heartbeat.wav");
