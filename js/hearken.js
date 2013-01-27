@@ -3,7 +3,7 @@ var TILE_HEIGHT = 40;
 var TILE_WIDTH = 40;
 var level_index = 0;
 var timeouts = [];
-var credits = "Credits\n\nMichael Delfino - programming, game design\nMichael Derenge - artwork\nJun Huang - logistics\nMathieu Keith - music\nEdgar Allan Poe - inspiration, text from The Tell-Tale Heart\nSithjester - character sprite\nAnastasia Turner - story, game design\nNathan Turner - programming, game design";
+var credits = "Credits\n\nMichael Delfino - programming, game design\nMichael Derenge - artwork\nJun Huang - logistics\nMathieu Keith - music\nAnastasia Turner - story, game design\nNathan Turner - programming, game design\n\nThanks to:\nEdgar Allan Poe - inspiration, text from The Tell-Tale Heart\nSithjester - character sprite";
 
 window.onload = function() {
 
@@ -41,6 +41,7 @@ window.onload = function() {
                      "images/brick.png",
                      "images/floor.jpg",
                      "images/top_fow.png",
+                     "images/heart.png",
                      "sfx/short_heartbeat.wav",
                      "music/telltale-heart-no-hb.wav"], function() {
 			Crafty.sprite(32,48, "images/player.png", {
@@ -57,6 +58,9 @@ window.onload = function() {
             });
             Crafty.sprite(1600,1200, "images/top_fow.png", {
                 fow1: [0,0]
+            });
+            Crafty.sprite(400,400, "images/heart.png", {
+                heartSprite: [0,0]
             });
             Crafty.audio.add("heartbeat", "sfx/short_heartbeat.wav");
             Crafty.audio.add("music", "music/telltale-heart-no-hb.wav");
@@ -79,6 +83,21 @@ window.onload = function() {
                 .text("")
                 .css({"text-align":"center"});
         if(level_index >= LEVEL_DATA.Levels.length) {
+            //After beating the final level
+            screenText.css({"text-align":"right"});
+            var zoom = 1, dzoom = 0.05;
+            var heart = Crafty.e("2D, DOM, heartSprite")
+                .attr({x: 0, y: 0, z: 0})
+                .bind("EnterFrame", function() {
+                    this.css({"-webkit-transform": "scale("+zoom+")"});
+                    zoom += dzoom;
+                    if (zoom > 1.5) dzoom = - dzoom;
+                    if (zoom <= 1) dzoom = 0;
+                });
+            setInterval(function() {
+                Crafty.audio.play("heartbeat", 1, 1);
+                dzoom = 0.05;
+            }, 2500);
             animateText(screenText, credits, 100);
         } else {
             animateText(screenText, getCurrentLevel().introText, 50, function() {
