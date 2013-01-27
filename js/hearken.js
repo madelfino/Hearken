@@ -4,10 +4,17 @@ var TILE_WIDTH = 40;
 var level_index = 0;
 var timeouts = [];
 var intervals = [];
-var credits = "Credits\n\nMichael Delfino - programming, game design\nMichael Derenge - artwork\nJun Huang - logistics\nMathieu Keith - music\nEdgar Allan Poe - inspiration, text from Tell-Tale Heart\nAnastasia Turner - story, game design\nNathan Turner - programming, game design"
+var credits = "Credits\n\nMichael Delfino - programming, game design\nMichael Derenge - artwork\nJun Huang - logistics\nMathieu Keith - music\nEdgar Allan Poe - inspiration, text from The Tell-Tale Heart\nAnastasia Turner - story, game design\nNathan Turner - programming, game design"
 window.onload = function() {
 
     Crafty.init(800,600);
+
+    function clearTimeouts() {
+        for (var i=0; i<timeouts.length; ++i) {
+            clearTimeout(timeouts[i]);
+        }
+        timeouts = [];
+    }
 
     function animateText(entity, text, speed, callback) {
         var index = 0;
@@ -49,7 +56,7 @@ window.onload = function() {
             });
             Crafty.audio.add("heartbeat", "sfx/short_heartbeat.wav");
             Crafty.audio.add("music", "music/telltale-heart-no-hb.wav");
-            Crafty.audio.play("music", -1, 1);
+            Crafty.audio.play("music", -1, 0.5);
             Crafty.scene("intro");
         });
 
@@ -78,8 +85,7 @@ window.onload = function() {
             });
             screenText.requires('Keyboard').bind('KeyDown', function () {
                 if (this.isDown('SPACE')) {
-                    for (var i=0; i<timeouts.length; ++i) clearTimeout(timeouts[i]);
-                    timeouts = [];
+                    clearTimeouts();
                     Crafty.scene("main");
                 }
             });
@@ -160,7 +166,6 @@ window.onload = function() {
         generateMap(level);
         objective = getObjective(level);
 
-        console.log(level);
         function getObjective(level)
         {
             var toRel = [];
@@ -169,11 +174,22 @@ window.onload = function() {
             console.log(toRel);
             return toRel;
         }
-        intervals.push(setInterval(function(){
+        var getHeartbeatSpeed = function() {
+            speed = (distance(player._x, objective.x, player._y, objective.y))*5;
+            if (speed < 1000) speed = 1000;
+            return speed;
+        };
+        var heartbeatSpeed = getHeartbeatSpeed;
+        var addHeartbeat = function(speed) {
+            return setTimeout(function() {
                 var distToHeart = distance(player._x, objective.x, player._y, objective.y);
                 var heartbeatVolume = 1 - Math.log((distToHeart+3)/3)/10.0;
                 Crafty.audio.play("heartbeat", 1, (heartbeatVolume < 1) ? ((heartbeatVolume > 0) ? heartbeatVolume : 0) : 1);
-            }, 3000));
+                clearTimeouts();
+                timeouts.push(addHeartbeat(getHeartbeatSpeed()));
+            }, speed);
+        };
+        timeouts.push(addHeartbeat(heartbeatSpeed));
 
         var player = Crafty.e("2D, DOM, playerSprite, playerControls, Collision, Dude, Keyboard")
                 .attr({x: getStartX(level), y: getStartY(level)})
@@ -201,8 +217,7 @@ window.onload = function() {
                 var digText = "";
                 if(withinRange(player._x, objective.x, player._y, objective.y)){
                     ++level_index;
-                    for (var i=0; i<intervals.length; ++i) clearInterval(intervals[i]);
-                    intervals = [];
+                    clearTimeouts();
                     Crafty.scene("intro");
                 } else {
                 }
