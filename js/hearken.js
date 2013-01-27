@@ -46,6 +46,7 @@ window.onload = function() {
                      "images/top_fow.png",
                      "images/heart.png",
                      "images/pulse.png",
+                     "images/logo.png",
                      "sfx/short_heartbeat.wav",
                      "music/telltale-heart-no-hb.wav"], function() {
             Crafty.sprite(32,48, "images/player.png", {
@@ -69,10 +70,12 @@ window.onload = function() {
             Crafty.sprite(400,400, "images/heart.png", {
                 heartSprite: [0,0]
             });
+            Crafty.sprite(800,600, "images/logo.png", {
+                titleScreen: [0,0]
+            });
             Crafty.audio.add("heartbeat", "sfx/short_heartbeat.wav");
             Crafty.audio.add("music", "music/telltale-heart-no-hb.wav");
-            Crafty.audio.play("music", -1, 0.3);
-            Crafty.scene("intro");
+            Crafty.scene("title");
         });
 
         Crafty.background("#000");
@@ -82,6 +85,15 @@ window.onload = function() {
     });
 
     Crafty.scene("loading");
+
+    Crafty.scene("title", function() {
+        var logo = Crafty.e("2D, DOM, titleScreen")
+            .attr({x:0, y:0, z:0, w:800, h:600});
+        setTimeout(function() {
+            Crafty.audio.play("music", -1, 0.3);
+            Crafty.scene("intro");
+        }, 3000);
+    });
 
     Crafty.scene("intro", function() {
         var done = false;
