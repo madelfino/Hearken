@@ -4,7 +4,7 @@ var TILE_WIDTH = 40;
 var level_index = 0;
 var timeouts = [];
 var heartbeatTimeouts = [];
-var credits = "Credits\n\nMichael Delfino - programming, game design, project management\nMichael Derenge - artwork\nJun Huang - logistics\nMathieu Keith - music\nAnastasia Turner - story, game design\nNathan Turner - programming, game design\n\nThanks to:\nEmily Boots - beer\nEdgar Allan Poe - inspiration, text from The Tell-Tale Heart\nRunJumpDev and everyone behind GGJ2013\nSithjester - character sprite";
+var credits = "Credits\n\nMichael Delfino - programming,\ngame design, project management\nMichael Derenge - artwork\nJun Huang - logistics\nMathieu Keith - music\nAnastasia Turner - story, game design\nNathan Turner - programming, game design\n\nThanks to:\nEmily Boots - beer\nEdgar Allan Poe - inspiration, text from The Tell-Tale Heart\nRunJumpDev and everyone behind GGJ2013\nSithjester - character sprite";
 var DEBUG = false;
 
 window.onload = function() {
@@ -92,24 +92,39 @@ window.onload = function() {
         if(level_index >= LEVEL_DATA.Levels.length) {
             //After beating the final level
             screenText.css({"text-align":"right"});
-            var zoom = 1, dzoom = 0.04;
+            var zoom = 0.2, dzoom = 0.003, ddzoom = -0.008, count = 0, stopGrowth = false, beat = false;
+            Crafty.audio.play("heartbeat", 1, 1);
+            var cover = Crafty.e("2D, DOM, fow1").attr({x:0,y:0,z:10});
             var heart = Crafty.e("2D, DOM, heartSprite")
                 .attr({x: 0, y: 0, z: 0})
+                .css({"zoom":zoom, //IE
+                      "-webkit-transform": "scale("+zoom+")", //Chrome
+                      "-moz-transform":"scale("+zoom+")" //Firefox
+                      })
                 .bind("EnterFrame", function() {
+                    ++count; if(cover && count > 10) cover.destroy();
+                    zoom = zoom + dzoom + ddzoom;
+                    if (zoom < 0) zoom = 0;
+                    if(stopGrowth) {
+                        if (count >= 12 && !beat) {dzoom = -dzoom; beat = true;}
+                        if (count >= 24) {dzoom = 0; beat = false;}
+                    } else {
+                        if (count >= 20) ddzoom = 0;
+                        if (zoom > 1.2) {stopGrowth = true; ddzoom = 0;}
+                    }
                     //zoom is different for different browsers,
                     //for the sake of cross compatibilty, we'll implement as many as we can
                     this.css({"zoom":zoom, //IE
                               "-webkit-transform": "scale("+zoom+")", //Chrome
                               "-moz-transform":"scale("+zoom+")" //Firefox
                               });
-                    zoom += dzoom;
-                    if (zoom > 1.25) dzoom = - dzoom;
-                    if (zoom <= 1) dzoom = 0;
                 });
-            setInterval(function() {
-                Crafty.audio.play("heartbeat", 1, 1);
-                dzoom = 0.04;
-            }, 2500);
+                setInterval(function() {
+                    Crafty.audio.play("heartbeat", 1, 1);
+                    if (stopGrowth) {dzoom = -0.01; count = 0;}
+                    else {ddzoom = -0.008; count = 0;};
+                }, 2000);
+
             animateText(screenText, credits, 100);
         } else {
             animateText(screenText, getCurrentLevel().introText, 50, function() {
