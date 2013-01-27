@@ -30,6 +30,9 @@ window.onload = function() {
                         Crafty.sprite(40, 40, "images/wall.png", {
                                 wallSprite: [0,0]
                         });
+                        Crafty.sprite(40, 40, "images/floor.jpg", {
+                                floorSprite: [0,0]
+                        });
             Crafty.audio.add("heartbeat", "sfx/short_heartbeat.wav");
             Crafty.audio.add("music", "music/telltale-heart-no-hb.wav");
             Crafty.scene("intro");
@@ -207,7 +210,9 @@ function generateMap(level)
     {
         for(var i = 0; i < tiles[j].length; i++)
         {
-            if(tiles[j][i]=='1')
+            if(tiles[j][i]=='0')
+                addFloor(i, j);
+            else if(tiles[j][i]=='1')
                 addWall(i, j);
         }
     }
@@ -216,5 +221,11 @@ function generateMap(level)
 function addWall(i, j)
 {
     Crafty.e("2D, DOM, solid, wallSprite")
+        .attr({x: i*40, y: j*40, z: 0});
+}
+
+function addFloor(i, j)
+{
+    Crafty.e("2D, DOM, floorSprite")
         .attr({x: i*40, y: j*40, z: 0});
 }
