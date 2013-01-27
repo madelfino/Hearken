@@ -20,7 +20,7 @@ window.onload = function() {
     }
 
     Crafty.scene("loading", function(){
-    
+
         Crafty.load(["images/background.png", "images/player.png", "sfx/heartbeat.wav"], function() {
 			Crafty.sprite(32,48, "images/player.png", {
 				playerSprite: [0,0]
@@ -39,7 +39,7 @@ window.onload = function() {
     });
 
     Crafty.scene("loading");
-    
+
     Crafty.scene("intro", function() {
         var done = false;
         var screenText = Crafty.e("2D, DOM, Text").attr({w:600,h:20,x:100,y:100})
@@ -51,7 +51,7 @@ window.onload = function() {
             setTimeout(function(){Crafty.scene("main");},4000);
         });
     });
-    
+
     Crafty.c('Dude', {
         Dude: function() {
                 //setup animations
@@ -95,30 +95,30 @@ window.onload = function() {
             return this;
         }
     });
-	
+
     Crafty.c("playerControls", {
         init: function() {
             this.requires('Multiway');
         },
-        
+
         playerControls: function(speed) {
             this.multiway(speed, {UP_ARROW: -90, DOWN_ARROW: 90, RIGHT_ARROW: 0, LEFT_ARROW: 180})
             return this;
         }
-        
+
     });
 
     //to determine if the player is close enough to the objective
     function withinRange(x1,x2,y1,y2)
-    {	
+    {
         return (distance(x1,x2,y1,y2) <= 40);
     }
-	
+
     function distance(x1,x2,y1,y2)
     {
         return Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
     }
-    
+
     Crafty.scene("main", function() {
         Crafty.background("url('images/background.png')");
 
@@ -142,7 +142,7 @@ window.onload = function() {
                 textToDisplay = "Distance: " + distToHeart + " volume: " + heartbeatVolume;
                 screenText.text(textToDisplay);
             }, 3000);
-        
+
         var player = Crafty.e("2D, DOM, playerSprite, playerControls, Collision, Dude, Keyboard")
                 .attr({x: getStartX(level), y: getStartY(level), score:0})
                 .origin("center")
@@ -185,7 +185,7 @@ function getCurrentLevel()
 function generateMap(level)
 {
     var tiles = level.tiles;
-    
+
     for(var j = 0; j < tiles.length; j++)
     {
         for(var i = 0; i < tiles[j].length; i++)
