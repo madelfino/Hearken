@@ -60,7 +60,7 @@ window.onload = function() {
             });
             Crafty.audio.add("heartbeat", "sfx/short_heartbeat.wav");
             Crafty.audio.add("music", "music/telltale-heart-no-hb.wav");
-            Crafty.audio.play("music", -1, 0.5);
+            Crafty.audio.play("music", -1, 0.3);
             Crafty.scene("intro");
         });
 
