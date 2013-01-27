@@ -192,7 +192,7 @@ window.onload = function() {
                             this.stop();
                         }
                 })
-                .collision([0,47], [0,37], [31,37], [31,47])
+                .collision([0,39], [0,37], [31,37], [31,39])
                 .onHit("wallSprite", function(){console.log("wallSprite onHit");})
                 // A rudimentary way to prevent the user from passing solid areas
                 .bind('Moved', function(from) {
