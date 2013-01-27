@@ -42,7 +42,6 @@ window.onload = function() {
                      "images/player.png",
                      "images/wall.png",
                      "images/brick.png",
-                     "images/floor.jpg",
                      "images/top_fow.png",
                      "images/heart.png",
                      "images/pulse.png",
