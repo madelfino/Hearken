@@ -23,7 +23,7 @@ window.onload = function() {
 
     Crafty.scene("loading", function(){
 
-        Crafty.load(["images/background.png", "images/player.png", "sfx/heartbeat.wav"], function() {
+        Crafty.load(["images/background.png", "images/player.png", "sfx/heartbeat.wav", "music/telltale-heart-no-hb.wav"], function() {
 			Crafty.sprite(32,48, "images/player.png", {
 				playerSprite: [0,0]
 			});
@@ -31,6 +31,7 @@ window.onload = function() {
                                 wallSprite: [0,0]
                         });
             Crafty.audio.add("heartbeat", "sfx/short_heartbeat.wav");
+            Crafty.audio.add("music", "music/telltale-heart-no-hb.wav");
             Crafty.scene("intro");
         });
 
@@ -61,6 +62,7 @@ window.onload = function() {
                 Crafty.scene("main");
             }
         });
+        Crafty.audio.play("music", -1, 1);
     });
 
     Crafty.c('Dude', {
