@@ -329,26 +329,18 @@ function generateMap(level) {
         for(var i = 0; i < tiles[j].length; i++)
         {
             if(tiles[j][i]=='0')
-                addFloor(i, j);
+                addTile(i, j,"floorSprite");
             else if(tiles[j][i]=='1')
-                addWall(i, j);
+                addTile(i, j,"wallSprite", true);
             else if(tiles[j][i]=='2')
-                addBrick(i, j);
+                addTile(i, j,"brickSprite", true);
         }
     }
 };
 
-function addWall(i,j) {
-    Crafty.e("2D, DOM, solid, wallSprite")
-        .attr({x: i*TILE_WIDTH, y: j*TILE_HEIGHT, z: 0});
-}
-
-function addFloor(i,j) {
-    Crafty.e("2D, DOM, floorSprite")
-        .attr({x: i*TILE_WIDTH, y: j*TILE_HEIGHT, z: 0});
-}
-
-function addBrick(i,j) {
-    Crafty.e("2D, DOM, solid, brickSprite")
+function addTile(i,j,tileSprite,solid)
+{
+    var solidString = solid ? "solid," : "";
+    Crafty.e("2D, DOM, " + solidString + tileSprite)
         .attr({x: i*TILE_WIDTH, y: j*TILE_HEIGHT, z: 0});
 }
