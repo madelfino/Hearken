@@ -124,10 +124,17 @@ window.onload = function() {
 
         level = getCurrentLevel();
         generateMap(level);
-        var objective = [];
-        objective.x = 100;
-        objective.y = 100;
-        
+        objective = getObjective(level);
+
+        console.log(level);
+        function getObjective(level)
+        {
+            var toRel = [];
+            toRel.x = level.objective[1]*TILE_WIDTH;
+            toRel.y = level.objective[0]*TILE_HEIGHT;
+            console.log(toRel);
+            return toRel;
+        }
         var beat = setInterval(function(){
                 //var distToHeart = distance(player.x, level.objective[1]*TILE_HEIGHT, player.y, level.objective[0]*TILE_WIDTH);
                 var distToHeart = distance(player._x, objective.x, player._y, objective.y);
