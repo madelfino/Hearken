@@ -4,7 +4,8 @@ var TILE_WIDTH = 40;
 var level_index = 0;
 var timeouts = [];
 var heartbeatTimeouts = [];
-var credits = "Credits\n\nMichael Delfino - programming, game design\nMichael Derenge - artwork\nJun Huang - logistics\nMathieu Keith - music\nAnastasia Turner - story, game design\nNathan Turner - programming, game design\n\nThanks to:\nEdgar Allan Poe - inspiration, text from The Tell-Tale Heart\nSithjester - character sprite";
+var credits = "Credits\n\nMichael Delfino - programming, game design, project management\nMichael Derenge - artwork\nJun Huang - logistics\nMathieu Keith - music\nAnastasia Turner - story, game design\nNathan Turner - programming, game design\n\nThanks to:\nEmily Boots - beer\nEdgar Allan Poe - inspiration, text from The Tell-Tale Heart\nRunJumpDev and everyone behind GGJ2013\nSithjester - character sprite";
+var DEBUG = false;
 
 window.onload = function() {
 
@@ -251,6 +252,16 @@ window.onload = function() {
             }, speed);
         };
         heartbeatTimeouts.push(addHeartbeat(getHeartbeatSpeed()));
+
+        player.requires('Keyboard').bind('KeyDown', function () {
+            if (this.isDown('SPACE') && DEBUG) {
+                //skipLevel
+                ++level_index;
+                clearTimeouts(heartbeatTimeouts);
+                clearTimeouts();
+                Crafty.scene("intro");
+            }
+        });
 
         var screenText = Crafty.e("2D, DOM, Text").attr({w:600,h:20,x:100,y:500})
             .text("")
