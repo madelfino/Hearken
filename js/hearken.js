@@ -4,7 +4,7 @@ var TILE_WIDTH = 40;
 var level_index = 0;
 var timeouts = [];
 var intervals = [];
-
+var credits = "Credits\n\nMichael Delfino - programming, game design\nMichael Derenge - artwork\nJun Huang - logistics\nMathieu Keith - music\nEdgar Allan Poe - inspiration, text from Tell-Tale Heart\nAnastasia Turner - story, game design\nNathan Turner - programming, game design"
 window.onload = function() {
 
     Crafty.init(800,600);
@@ -13,7 +13,12 @@ window.onload = function() {
         var index = 0;
         function queueNextChar() {
             timeouts.push(setTimeout(function() {
-                entity.text(entity._text + text[index++]);
+                if (text[index] == '\n') {
+                    entity.text(entity._text + "<br>");
+                    ++index;
+                } else {
+                    entity.text(entity._text + text[index++]);
+                }
                 if (index < text.length) queueNextChar();
                 else if(callback) callback();
             }, speed));
@@ -27,17 +32,21 @@ window.onload = function() {
                      "images/player.png",
                      "images/wall.png",
                      "images/floor.jpg",
+                     "images/top_fow.png",
                      "sfx/short_heartbeat.wav",
                      "music/telltale-heart-no-hb.wav"], function() {
 			Crafty.sprite(32,48, "images/player.png", {
 				playerSprite: [0,0]
 			});
-                        Crafty.sprite(40, 40, "images/wall.png", {
-                                wallSprite: [0,0]
-                        });
-                        Crafty.sprite(40, 40, "images/wood.png", {
-                                floorSprite: [0,0]
-                        });
+            Crafty.sprite(40, 40, "images/wood.png", {
+                    floorSprite: [0,0]
+            });
+            Crafty.sprite(40, 40, "images/wall.png", {
+                wallSprite: [0,0]
+            });
+            Crafty.sprite(1600,1200, "images/top_fow.png", {
+                fow1: [0,0]
+            });
             Crafty.audio.add("heartbeat", "sfx/short_heartbeat.wav");
             Crafty.audio.add("music", "music/telltale-heart-no-hb.wav");
             Crafty.audio.play("music", -1, 1);
@@ -58,19 +67,23 @@ window.onload = function() {
         var screenText = Crafty.e("2D, DOM, Text").attr({w:600,h:20,x:100,y:100})
                 .text("")
                 .css({"text-align":"center"});
-        animateText(screenText, getCurrentLevel().introText, 50, function()
-        {
-            timeouts.push(setTimeout(function(){
-                Crafty.scene("main");
-            },4000));
-        });
-        screenText.requires('Keyboard').bind('KeyDown', function () {
-            if (this.isDown('SPACE')) {
-                for (var i=0; i<timeouts.length; ++i) clearTimeout(timeouts[i]);
-                timeouts = [];
-                Crafty.scene("main");
-            }
-        });
+        if(level_index >= LEVEL_DATA.Levels.length) {
+            animateText(screenText, credits, 100);
+        } else {
+            animateText(screenText, getCurrentLevel().introText, 50, function()
+            {
+                timeouts.push(setTimeout(function(){
+                    Crafty.scene("main");
+                },4000));
+            });
+            screenText.requires('Keyboard').bind('KeyDown', function () {
+                if (this.isDown('SPACE')) {
+                    for (var i=0; i<timeouts.length; ++i) clearTimeout(timeouts[i]);
+                    timeouts = [];
+                    Crafty.scene("main");
+                }
+            });
+        }
     });
 
     Crafty.c('Dude', {
@@ -164,10 +177,17 @@ window.onload = function() {
             }, 3000));
 
         var player = Crafty.e("2D, DOM, playerSprite, playerControls, Collision, Dude, Keyboard")
-                .attr({x: getStartX(level), y: getStartY(level), score:0})
+                .attr({x: getStartX(level), y: getStartY(level)})
                 .origin("center")
-                .playerControls(2)
+                .playerControls(1.5)
                 .Dude();
+
+        var fog_of_war_top = Crafty.e("2D, DOM, fow1, playerControls")
+                .attr({x: player._x - 782, y: player._y - 576})
+                .bind("EnterFrame", function() {
+                    this.attr({x: player._x - 782, y: player._y - 576});
+                });
+
         function getStartX(level)
         {
             return level.start[1] * TILE_WIDTH;
