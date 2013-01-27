@@ -195,9 +195,14 @@ window.onload = function() {
         };
         timeouts.push(addHeartbeat(heartbeatSpeed));
 
+        function getStartDirection() {
+          return level.start[2];
+        }
+
         var player = Crafty.e("2D, DOM, playerSprite, playerControls, Collision, Dude, Keyboard")
                 .attr({x: getStartX(level), y: getStartY(level)})
                 .origin("center")
+                .sprite(0, getStartDirection())
                 .playerControls(1.5)
                 .Dude();
 
