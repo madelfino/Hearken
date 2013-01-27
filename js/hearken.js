@@ -43,6 +43,7 @@ window.onload = function() {
                      "images/wall.png",
                      "images/brick.png",
                      "images/tiles.png",
+                     "images/drywall.png",
                      "images/top_fow.png",
                      "images/heart.png",
                      "images/pulse.png",
@@ -63,6 +64,9 @@ window.onload = function() {
             });
             Crafty.sprite(40, 40, "images/tiles.png", {
                 tileSprite: [0,0]
+            });
+            Crafty.sprite(40, 40, "images/drywall.png", {
+                drywallSprite: [0,0]
             });
             Crafty.sprite(80, 80, "images/pulse.png", {
                 pulseSprite: [0,0]
