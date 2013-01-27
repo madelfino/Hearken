@@ -3,6 +3,7 @@ var TILE_HEIGHT = 40;
 var TILE_WIDTH = 40;
 var level_index = 0;
 var timeouts = [];
+var intervals = [];
 
 window.onload = function() {
 
@@ -145,13 +146,13 @@ window.onload = function() {
             console.log(toRel);
             return toRel;
         }
-        var beat = setInterval(function(){
+        intervals.push(setInterval(function(){
                 var distToHeart = distance(player._x, objective.x, player._y, objective.y);
                 var heartbeatVolume = 1 - Math.log((distToHeart+3)/3)/10.0;
                 Crafty.audio.play("heartbeat", 1, (heartbeatVolume < 1) ? ((heartbeatVolume > 0) ? heartbeatVolume : 0) : 1);
                 textToDisplay = "Distance: " + distToHeart + " volume: " + heartbeatVolume;
                 screenText.text(textToDisplay);
-            }, 3000);
+            }, 3000));
 
         var player = Crafty.e("2D, DOM, playerSprite, playerControls, Collision, Dude, Keyboard")
                 .attr({x: getStartX(level), y: getStartY(level), score:0})
@@ -172,6 +173,10 @@ window.onload = function() {
                 var digText = "";
                 if(withinRange(player._x, objective.x, player._y, objective.y)){
                     digText = "HIT";
+                    ++level_index;
+                    for (var i=0; i<intervals.length; ++i) clearInterval(intervals[i]);
+                    intervals = [];
+                    Crafty.scene("intro");
                 } else {
                     digText = "MISS";
                 }
