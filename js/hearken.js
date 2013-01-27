@@ -3,8 +3,8 @@ var TILE_HEIGHT = 40;
 var TILE_WIDTH = 40;
 var level_index = 0;
 var timeouts = [];
-var intervals = [];
-var credits = "Credits\n\nMichael Delfino - programming, game design\nMichael Derenge - artwork\nJun Huang - logistics\nMathieu Keith - music\nEdgar Allan Poe - inspiration, text from The Tell-Tale Heart\nAnastasia Turner - story, game design\nNathan Turner - programming, game design"
+var credits = "Credits\n\nMichael Delfino - programming, game design\nMichael Derenge - artwork\nJun Huang - logistics\nMathieu Keith - music\nEdgar Allan Poe - inspiration, text from The Tell-Tale Heart\nSithjester - character sprite\nAnastasia Turner - story, game design\nNathan Turner - programming, game design";
+
 window.onload = function() {
 
     Crafty.init(800,600);
@@ -81,8 +81,7 @@ window.onload = function() {
         if(level_index >= LEVEL_DATA.Levels.length) {
             animateText(screenText, credits, 100);
         } else {
-            animateText(screenText, getCurrentLevel().introText, 50, function()
-            {
+            animateText(screenText, getCurrentLevel().introText, 50, function() {
                 timeouts.push(setTimeout(function(){
                     Crafty.scene("main");
                 },4000));
@@ -149,35 +148,41 @@ window.onload = function() {
             this.multiway(speed, {UP_ARROW: -90, DOWN_ARROW: 90, RIGHT_ARROW: 0, LEFT_ARROW: 180})
             return this;
         }
-
     });
 
     //to determine if the player is close enough to the objective
-    function withinRange(x1,x2,y1,y2)
-    {
+    function withinRange(x1,x2,y1,y2) {
         return (distance(x1,x2,y1,y2) <= 40);
     }
 
-    function distance(x1,x2,y1,y2)
-    {
+    function distance(x1,x2,y1,y2) {
         return Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
     }
 
     Crafty.scene("main", function() {
         Crafty.background("url('images/background.png')");
 
+        //get data for the current level
         level = getCurrentLevel();
         generateMap(level);
-        objective = getObjective(level);
 
-        function getObjective(level)
-        {
+        function getStartDirection() {
+          return level.start[2];
+        }
+        function getStartX(level) {
+            return level.start[1] * TILE_WIDTH;
+        }
+        function getStartY(level) {
+            return level.start[0] * TILE_HEIGHT;
+        }
+        function getObjective(level) {
             var toRel = [];
             toRel.x = level.objective[1]*TILE_WIDTH;
             toRel.y = level.objective[0]*TILE_HEIGHT;
-            console.log(toRel);
             return toRel;
         }
+        objective = getObjective(level);
+
         var getHeartbeatSpeed = function() {
             speed = (distance(player._x, objective.x, player._y, objective.y))*5;
             if (speed < 1000) speed = 1000;
@@ -195,11 +200,7 @@ window.onload = function() {
         };
         timeouts.push(addHeartbeat(heartbeatSpeed));
 
-        function getStartDirection() {
-          return level.start[2];
-        }
-
-        var player = Crafty.e("2D, DOM, playerSprite, playerControls, Collision, Dude, Keyboard")
+        var player = Crafty.e("2D, DOM, playerSprite, playerControls, Collision, Dude")
                 .attr({x: getStartX(level), y: getStartY(level)})
                 .origin("center")
                 .sprite(0, getStartDirection())
@@ -212,15 +213,6 @@ window.onload = function() {
                     this.attr({x: player._x - 782, y: player._y - 576});
                 });
 
-        function getStartX(level)
-        {
-            return level.start[1] * TILE_WIDTH;
-        }
-        function getStartY(level)
-        {
-            return level.start[0] * TILE_HEIGHT;
-        }
-
         player.requires('Keyboard').bind('KeyDown', function () {
             if (this.isDown('SPACE')) {
                 var digText = "";
@@ -229,6 +221,7 @@ window.onload = function() {
                     clearTimeouts();
                     Crafty.scene("intro");
                 } else {
+                    //consequences of digging in the wrong spot?
                 }
             }
         });
@@ -236,14 +229,12 @@ window.onload = function() {
 
 };
 
-function getCurrentLevel()
-{
+function getCurrentLevel() {
     return LEVEL_DATA.Levels[level_index];
 }
 
 //  GenerateMap
-function generateMap(level)
-{
+function generateMap(level) {
     var tiles = level.tiles;
 
     for(var j = 0; j < tiles.length; j++)
@@ -260,20 +251,17 @@ function generateMap(level)
     }
 };
 
-function addWall(i, j)
-{
+function addWall(i,j) {
     Crafty.e("2D, DOM, solid, wallSprite")
-        .attr({x: i*40, y: j*40, z: 0});
+        .attr({x: i*TILE_WIDTH, y: j*TILE_HEIGHT, z: 0});
 }
 
-function addFloor(i, j)
-{
+function addFloor(i,j) {
     Crafty.e("2D, DOM, floorSprite")
-        .attr({x: i*40, y: j*40, z: 0});
+        .attr({x: i*TILE_WIDTH, y: j*TILE_HEIGHT, z: 0});
 }
 
-function addBrick(i, j)
-{
+function addBrick(i,j) {
     Crafty.e("2D, DOM, solid, brickSprite")
-        .attr({x: i*40, y: j*40, z: 0});
+        .attr({x: i*TILE_WIDTH, y: j*TILE_HEIGHT, z: 0});
 }
