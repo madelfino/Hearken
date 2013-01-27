@@ -3,15 +3,17 @@ var TILE_HEIGHT = 40;
 var TILE_WIDTH = 40;
 var level_index = 0;
 var timeouts = [];
+var heartbeatTimeouts = [];
 var credits = "Credits\n\nMichael Delfino - programming, game design\nMichael Derenge - artwork\nJun Huang - logistics\nMathieu Keith - music\nAnastasia Turner - story, game design\nNathan Turner - programming, game design\n\nThanks to:\nEdgar Allan Poe - inspiration, text from The Tell-Tale Heart\nSithjester - character sprite";
 
 window.onload = function() {
 
     Crafty.init(800,600);
 
-    function clearTimeouts() {
-        for (var i=0; i<timeouts.length; ++i) {
-            clearTimeout(timeouts[i]);
+    function clearTimeouts(timeout_list) {
+        if (!timeout_list) timeout_list = timeouts;
+        for (var i=0; i<timeout_list.length; ++i) {
+            clearTimeout(timeout_list[i]);
         }
         timeouts = [];
     }
@@ -44,9 +46,9 @@ window.onload = function() {
                      "images/heart.png",
                      "sfx/short_heartbeat.wav",
                      "music/telltale-heart-no-hb.wav"], function() {
-			Crafty.sprite(32,48, "images/player.png", {
-				playerSprite: [0,0]
-			});
+            Crafty.sprite(32,48, "images/player.png", {
+                playerSprite: [0,0]
+            });
             Crafty.sprite(40, 40, "images/wood.png", {
                     floorSprite: [0,0]
             });
@@ -85,7 +87,7 @@ window.onload = function() {
         if(level_index >= LEVEL_DATA.Levels.length) {
             //After beating the final level
             screenText.css({"text-align":"right"});
-            var zoom = 1, dzoom = 0.05;
+            var zoom = 1, dzoom = 0.04;
             var heart = Crafty.e("2D, DOM, heartSprite")
                 .attr({x: 0, y: 0, z: 0})
                 .bind("EnterFrame", function() {
@@ -96,12 +98,12 @@ window.onload = function() {
                               "-moz-transform":"scale("+zoom+")" //Firefox
                               });
                     zoom += dzoom;
-                    if (zoom > 1.5) dzoom = - dzoom;
+                    if (zoom > 1.25) dzoom = - dzoom;
                     if (zoom <= 1) dzoom = 0;
                 });
             setInterval(function() {
                 Crafty.audio.play("heartbeat", 1, 1);
-                dzoom = 0.05;
+                dzoom = 0.04;
             }, 2500);
             animateText(screenText, credits, 100);
         } else {
@@ -176,7 +178,7 @@ window.onload = function() {
 
     //to determine if the player is close enough to the objective
     function withinRange(x1,x2,y1,y2) {
-        return (distance(x1,x2,y1,y2) <= 40);
+        return (distance(x1,x2,y1,y2) <= 25);
     }
 
     function distance(x1,x2,y1,y2) {
@@ -207,29 +209,26 @@ window.onload = function() {
         }
         objective = getObjective(level);
 
-        var getHeartbeatSpeed = function() {
-            speed = (distance(player._x, objective.x, player._y, objective.y))*5;
-            if (speed < 1000) speed = 1000;
-            return speed;
-        };
-        var heartbeatSpeed = getHeartbeatSpeed;
-        var addHeartbeat = function(speed) {
-            return setTimeout(function() {
-                var distToHeart = distance(player._x, objective.x, player._y, objective.y);
-                var heartbeatVolume = 1 - Math.log((distToHeart+3)/3)/10.0;
-                Crafty.audio.play("heartbeat", 1, (heartbeatVolume < 1) ? ((heartbeatVolume > 0) ? heartbeatVolume : 0) : 1);
-                clearTimeouts();
-                timeouts.push(addHeartbeat(getHeartbeatSpeed()));
-            }, speed);
-        };
-        timeouts.push(addHeartbeat(heartbeatSpeed));
-
+        var triggered = false;
         var player = Crafty.e("2D, DOM, playerSprite, playerControls, Collision, Dude")
                 .attr({x: getStartX(level), y: getStartY(level)})
                 .origin("center")
                 .sprite(0, getStartDirection())
                 .playerControls(1.5)
-                .Dude();
+                .Dude()
+                .bind("EnterFrame", function() {
+                    if(withinRange(this._x, objective.x, this._y, objective.y) && !triggered) {
+                        triggered = true;
+                        animateText(screenText, level.triggerText, 50, function() {
+                            timeouts.push(setTimeout(function() {
+                                ++level_index;
+                                clearTimeouts(heartbeatTimeouts);
+                                clearTimeouts();
+                                Crafty.scene("intro");
+                                }, 3000));
+                            });
+                        }
+                    });
 
         var fog_of_war_top = Crafty.e("2D, DOM, fow1, playerControls")
                 .attr({x: player._x - 782, y: player._y - 576})
@@ -237,18 +236,25 @@ window.onload = function() {
                     this.attr({x: player._x - 782, y: player._y - 576});
                 });
 
-        player.requires('Keyboard').bind('KeyDown', function () {
-            if (this.isDown('SPACE')) {
-                var digText = "";
-                if(withinRange(player._x, objective.x, player._y, objective.y)){
-                    ++level_index;
-                    clearTimeouts();
-                    Crafty.scene("intro");
-                } else {
-                    //consequences of digging in the wrong spot?
-                }
-            }
-        });
+        var getHeartbeatSpeed = function() {
+            speed = (distance(player._x, objective.x, player._y, objective.y))*5;
+            if (speed < 1000) speed = 1000;
+            return speed;
+        };
+        var addHeartbeat = function(speed) {
+            return setTimeout(function() {
+                var distToHeart = distance(player._x, objective.x, player._y, objective.y);
+                var heartbeatVolume = 1 - Math.log((distToHeart+3)/3)/10.0;
+                Crafty.audio.play("heartbeat", 1, (heartbeatVolume < 1) ? ((heartbeatVolume > 0) ? heartbeatVolume : 0) : 1);
+                clearTimeouts(heartbeatTimeouts);
+                heartbeatTimeouts.push(addHeartbeat(getHeartbeatSpeed()));
+            }, speed);
+        };
+        heartbeatTimeouts.push(addHeartbeat(getHeartbeatSpeed()));
+
+        var screenText = Crafty.e("2D, DOM, Text").attr({w:600,h:20,x:100,y:500})
+            .text("")
+            .css({"text-align":"left"});
     });
 
 };
