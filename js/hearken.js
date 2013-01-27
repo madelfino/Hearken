@@ -38,6 +38,7 @@ window.onload = function() {
         Crafty.load(["images/background.png",
                      "images/player.png",
                      "images/wall.png",
+                     "images/brick.png",
                      "images/floor.jpg",
                      "images/top_fow.png",
                      "sfx/short_heartbeat.wav",
@@ -50,6 +51,9 @@ window.onload = function() {
             });
             Crafty.sprite(40, 40, "images/wall.png", {
                 wallSprite: [0,0]
+            });
+            Crafty.sprite(40, 40, "images/brick.png", {
+                brickSprite: [0,0]
             });
             Crafty.sprite(1600,1200, "images/top_fow.png", {
                 fow1: [0,0]
@@ -245,6 +249,8 @@ function generateMap(level)
                 addFloor(i, j);
             else if(tiles[j][i]=='1')
                 addWall(i, j);
+            else if(tiles[j][i]=='2')
+                addBrick(i, j);
         }
     }
 };
@@ -258,5 +264,11 @@ function addWall(i, j)
 function addFloor(i, j)
 {
     Crafty.e("2D, DOM, floorSprite")
+        .attr({x: i*40, y: j*40, z: 0});
+}
+
+function addBrick(i, j)
+{
+    Crafty.e("2D, DOM, solid, brickSprite")
         .attr({x: i*40, y: j*40, z: 0});
 }
