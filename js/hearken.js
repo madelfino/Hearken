@@ -42,6 +42,7 @@ window.onload = function() {
                      "images/player.png",
                      "images/wall.png",
                      "images/brick.png",
+                     "images/tiles.png",
                      "images/top_fow.png",
                      "images/heart.png",
                      "images/pulse.png",
@@ -59,6 +60,9 @@ window.onload = function() {
             });
             Crafty.sprite(40, 40, "images/brick.png", {
                 brickSprite: [0,0]
+            });
+            Crafty.sprite(40, 40, "images/tiles.png", {
+                tileSprite: [0,0]
             });
             Crafty.sprite(80, 80, "images/pulse.png", {
                 pulseSprite: [0,0]
@@ -333,6 +337,8 @@ function generateMap(level) {
                 addTile(i, j,"wallSprite", true);
             else if(tiles[j][i]=='2')
                 addTile(i, j,"brickSprite", true);
+            else if(tiles[j][i]=='3')
+                addTile(i, j,"tileSprite");
         }
     }
 };
