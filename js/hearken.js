@@ -136,7 +136,6 @@ window.onload = function() {
             return toRel;
         }
         var beat = setInterval(function(){
-                //var distToHeart = distance(player.x, level.objective[1]*TILE_HEIGHT, player.y, level.objective[0]*TILE_WIDTH);
                 var distToHeart = distance(player._x, objective.x, player._y, objective.y);
                 var heartbeatVolume = 1 - Math.log((distToHeart+3)/3)/10.0;
                 Crafty.audio.play("heartbeat", 1, (heartbeatVolume < 1) ? ((heartbeatVolume > 0) ? heartbeatVolume : 0) : 1);
