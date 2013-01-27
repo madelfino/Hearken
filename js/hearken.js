@@ -172,8 +172,6 @@ window.onload = function() {
                 var distToHeart = distance(player._x, objective.x, player._y, objective.y);
                 var heartbeatVolume = 1 - Math.log((distToHeart+3)/3)/10.0;
                 Crafty.audio.play("heartbeat", 1, (heartbeatVolume < 1) ? ((heartbeatVolume > 0) ? heartbeatVolume : 0) : 1);
-                textToDisplay = "Distance: " + distToHeart + " volume: " + heartbeatVolume;
-                screenText.text(textToDisplay);
             }, 3000));
 
         var player = Crafty.e("2D, DOM, playerSprite, playerControls, Collision, Dude, Keyboard")
@@ -201,21 +199,14 @@ window.onload = function() {
             if (this.isDown('SPACE')) {
                 var digText = "";
                 if(withinRange(player._x, objective.x, player._y, objective.y)){
-                    digText = "HIT";
                     ++level_index;
                     for (var i=0; i<intervals.length; ++i) clearInterval(intervals[i]);
                     intervals = [];
                     Crafty.scene("intro");
                 } else {
-                    digText = "MISS";
                 }
-                screenText.text(digText);
             }
         });
-
-        var screenText = Crafty.e("2D, DOM, Text").attr({w:100,h:20,x:150,y:120})
-                .text("")
-                .css({"text-align":"center"});
     });
 
 };
