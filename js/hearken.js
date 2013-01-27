@@ -2,6 +2,7 @@ var LEVEL_DATA;
 var TILE_HEIGHT = 40;
 var TILE_WIDTH = 40;
 var level_index = 0;
+var timeouts = [];
 
 window.onload = function() {
 
@@ -10,11 +11,11 @@ window.onload = function() {
     function animateText(entity, text, speed, callback) {
         var index = 0;
         function queueNextChar() {
-            setTimeout(function() {
+            timeouts.push(setTimeout(function() {
                 entity.text(entity._text + text[index++]);
                 if (index < text.length) queueNextChar();
                 else if(callback) callback();
-            }, speed);
+            }, speed));
         }
         if (index < text.length) queueNextChar();
     }
@@ -42,13 +43,22 @@ window.onload = function() {
 
     Crafty.scene("intro", function() {
         var done = false;
+        var timeoutid = 0;
         var screenText = Crafty.e("2D, DOM, Text").attr({w:600,h:20,x:100,y:100})
                 .text("")
                 .css({"text-align":"center"});
-        screenText.requires('Keyboard').bind('KeyDown', function () { if (this.isDown('SPACE')) Crafty.scene("main"); });
         animateText(screenText, getCurrentLevel().introText, 50, function()
         {
-            setTimeout(function(){Crafty.scene("main");},4000);
+            timeouts.push(setTimeout(function(){
+                Crafty.scene("main");
+            },4000));
+        });
+        screenText.requires('Keyboard').bind('KeyDown', function () {
+            if (this.isDown('SPACE')) {
+                for (var i=0; i<timeouts.length; ++i) clearTimeout(timeouts[i]);
+                timeouts = [];
+                Crafty.scene("main");
+            }
         });
     });
 
