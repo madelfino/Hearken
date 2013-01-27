@@ -89,7 +89,12 @@ window.onload = function() {
             var heart = Crafty.e("2D, DOM, heartSprite")
                 .attr({x: 0, y: 0, z: 0})
                 .bind("EnterFrame", function() {
-                    this.css({"-webkit-transform": "scale("+zoom+")"});
+                    //zoom is different for different browsers,
+                    //for the sake of cross compatibilty, we'll implement as many as we can
+                    this.css({"zoom":zoom, //IE
+                              "-webkit-transform": "scale("+zoom+")", //Chrome
+                              "-moz-transform":"scale("+zoom+")" //Firefox
+                              });
                     zoom += dzoom;
                     if (zoom > 1.5) dzoom = - dzoom;
                     if (zoom <= 1) dzoom = 0;
