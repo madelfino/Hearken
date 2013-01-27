@@ -118,11 +118,12 @@ window.onload = function() {
                             this.stop();
                         }
                 })
+                .collision([0,47], [0,37], [31,37], [31,47])
+                .onHit("wallSprite", function(){console.log("wallSprite onHit");})
                 // A rudimentary way to prevent the user from passing solid areas
                 .bind('Moved', function(from) {
                     if(this.hit('solid')){
                         this.attr({x: from.x, y:from.y});
-                        this.stop();
                     }
                 });
             return this;
