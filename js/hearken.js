@@ -335,16 +335,16 @@ function generateMap(level) {
     {
         for(var i = 0; i < tiles[j].length; i++)
         {
-            if(tiles[j][i]=='1')
-                addTile(i, j,"wallSprite", true);
+            if(tiles[j][i]=='0')
+                addTile(i, j,"floorSprite");
             else if(tiles[j][i]=='2')
-                addTile(i, j,"brickSprite", true);
+                addTile(i, j,"brickSprite");
             else if(tiles[j][i]=='3')
                 addTile(i, j,"tileSprite");
             else if(tiles[j][i]=='4')
                 addTile(i, j,"drywallSprite");
             else
-                addTile(i, j,"floorSprite");
+                addTile(i, j,"wallSprite", true);
         }
     }
 };
