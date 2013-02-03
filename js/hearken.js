@@ -255,6 +255,7 @@ window.onload = function() {
                 .sprite(0, getStartDirection())
                 .playerControls(1.2)
                 .Dude()
+                .collision([5,5], [5,48], [27,48], [27,5] )
                 .bind("EnterFrame", function() {
                     if(withinRange(this._x, objective.x, this._y, objective.y) && !triggered) {
                         triggered = true;
@@ -270,7 +271,7 @@ window.onload = function() {
                     });
 
         var fog_of_war_top = Crafty.e("2D, DOM, fow1, playerControls")
-                .attr({x: player._x - 782, y: player._y - 576})
+                .attr({x: player._x - 782, y: player._y - 576, z:10})
                 .bind("EnterFrame", function() {
                     this.attr({x: player._x - 782, y: player._y - 576});
                 });
@@ -316,7 +317,7 @@ window.onload = function() {
             }
         });
 
-        var screenText = Crafty.e("2D, DOM, Text").attr({w:600,h:20,x:100,y:500})
+        var screenText = Crafty.e("2D, DOM, Text").attr({w:600,h:20,x:100,y:500,z:100})
             .text("")
             .css({"text-align":"left"});
     });
@@ -344,7 +345,11 @@ function generateMap(level) {
             else if(tiles[j][i]=='4')
                 addTile(i, j,"drywallSprite");
             else
-                addTile(i, j,"wallSprite", true);
+             {
+                 Crafty.e("2D, DOM, solid, wallSprite, Collision")
+                     .attr({x: i*TILE_WIDTH, y: j*TILE_HEIGHT, w: TILE_WIDTH, h: TILE_HEIGHT, z: 3})
+                     .collision([0,TILE_HEIGHT/2], [0, TILE_HEIGHT], [TILE_WIDTH, TILE_HEIGHT], [TILE_WIDTH, TILE_HEIGHT/2]);
+             }
         }
     }
 };
